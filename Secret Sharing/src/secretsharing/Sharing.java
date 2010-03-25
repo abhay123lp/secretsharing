@@ -1,12 +1,12 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Secret Sharing by Lagrange's method. 
  */
 
 package secretsharing;
 
 import java.math.BigInteger;
-import steganographyException.*;
+import java.util.Random;
+import secretsharingException.*;
 
 public class Sharing {
 
@@ -17,9 +17,10 @@ public class Sharing {
 
     void generatePolynom(int power) {
         /* Generate Polynom modulo prime */
-        coefficients = new BigInteger[power + 1];
-        for (int i = 0; i <= power; i++) {
-            coefficients[i] = prime.nextProbablePrime();
+        coefficients = new BigInteger[power];
+        Random rnd = new Random();
+        for (int i = 0; i < power; i++) {
+            coefficients[i] = BigInteger.probablePrime(prime.bitLength(), rnd);
             coefficients[i] = coefficients[i].mod(prime);
         }
     }
@@ -36,19 +37,19 @@ public class Sharing {
         return value;
     }
 
-    public BigInteger[] getShares(BigInteger[] args, int k, int n) throws BadQuantityArgumentsException {
-        /* Create (k,n)threshold scheme */
+    public BigInteger[] getShares(BigInteger[] args, int k, int n) throws SharingException {
+        /* Create (k,n)threshold scheme by calculating values of random polynom modulo prime */
         if (args.length != n) {
-            throw new BadQuantityArgumentsException();
+            throw new SharingException("Args lenth doesn't match with n!");
         }
         BigInteger[] shares = new BigInteger[n];
-        generatePolynom(k - 1);
+        generatePolynom(k-1);
         for (int i = 0; i < shares.length; i++) {
             shares[i] = getPolynomValue(args[i]);
         }
         return shares;
     }
-    private BigInteger message;
-    private BigInteger prime;
-    private BigInteger[] coefficients;
+    protected BigInteger message;
+    protected BigInteger prime;
+    protected BigInteger[] coefficients;
 }
