@@ -1,5 +1,5 @@
 /*
- * Test for Sharing.java
+ * Tests for Sharing.java
  */
 
 package secretsharing;
