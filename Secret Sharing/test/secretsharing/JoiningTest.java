@@ -1,5 +1,5 @@
 /*
- * Test for Joining.java
+ * Tests for Joining.java
  */
 package secretsharing;
 
