@@ -9,7 +9,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class EmbeddingTest {
 
@@ -41,11 +40,17 @@ public class EmbeddingTest {
         BigInteger[] args = new BigInteger[3];
         BigInteger[] values = new BigInteger[3];
         for (int i = 0; i < 3; i++) {
-            args[i] = BigInteger.valueOf((i+100)*(i+100));
-            values[i] = args[i].pow(i+100);
+            args[i] = BigInteger.valueOf(i+1000);
+            values[i] = args[i].pow(5);
+        }
+         for (int i=0; i<3; i++)
+        {
+            System.out.println(args[i].toString());
+            System.out.println(values[i].toString());
         }
         Embedding instance = new Embedding("1.bmp");
         instance.writeShares(args, values);
+        instance.saveToFile("11.bmp");
         // TODO review the generated test code and remove the default call to fail.
         //  fail("The test case is a prototype.");
     }
