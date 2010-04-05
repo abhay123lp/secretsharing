@@ -40,16 +40,37 @@ public class Embedding {
         bitcount = (((int) infohead[15] & 0xff) << 8) | (int) infohead[14] & 0xff;
         int sizeimage = (((int) infohead[23] & 0xff) << 24) | (((int) infohead[22] & 0xff) << 16) | (((int) infohead[21] & 0xff) << 8) | (int) infohead[20] & 0xff;
         pad = (sizeimage / height) - width * 3;
+        count = 0;
     }
 
     public void writeShares(BigInteger[] args, BigInteger[] values) throws SteganographyException {
         if (bitcount != 24) {
             throw new SteganographyException("Not 24-bit format");
         }
+        writeInt(args.length);
+        for (int i = 0; i < args.length; i++) {
+            writeInt(args[i].bitLength());
+            writeBigInteger(args[i]);
+            writeInt(values[i].bitLength());
+            writeBigInteger(values[i]);
+        }
+    }
 
-        int count = 0;
+    private void writeBigInteger(BigInteger info) {
         int current;
-        int info = args.length;
+        int length = info.bitLength();
+        for (int j = 0; j < length; j++) {
+            current = (rgb[count] & 0xFF);
+            current = (current & 254); // зануляем 1 младший бит
+            current = (info.and(BigInteger.ONE)).or(BigInteger.valueOf(current)).intValue(); // записываем в текущий цвет новую информацию
+            info = info.shiftRight(1);
+            rgb[count] = (byte) current;
+            count++;
+        }
+    }
+
+    private void writeInt(int info) {
+        int current;
         for (int j = 0; j < 32; j++) {
             current = (rgb[count] & 0xFF);
             current = (current & 254); // зануляем 1 младший бит
@@ -57,48 +78,6 @@ public class Embedding {
             info = info >> 1;
             rgb[count] = (byte) current;
             count++;
-        }
-        for (int i = 0; i < args.length; i++) {
-            // записывем int - количество байл в args[i]
-            info = args[i].bitLength();
-            for (int j = 0; j < 32; j++) {
-                current = (rgb[count] & 0xFF);
-                current = (current & 254); // зануляем 1 младший бит
-                current = (current | (info & 1)); // записываем в текущий цвет новую информацию
-                info = info >> 1;
-                rgb[count] = (byte) current;
-                count++;
-            }
-            // записываем args[i]
-            BigInteger arg = args[i];
-            for (int j = 0; j < args[i].bitLength(); j++) {
-                current = (rgb[count] & 0xFF);
-                current = (current & 254); // зануляем 1 младший бит
-                current= ((arg.and(BigInteger.ONE)).or(BigInteger.valueOf(current))).intValue();
-                arg = arg.shiftRight(1);
-                rgb[count] = (byte) current;
-                count++;
-            }
-            // записывем int - количество байл в values[i]
-            info = values[i].bitLength();
-            for (int j = 0; j < 32; j++) {
-                current = (rgb[count] & 0xFF);
-                current = (current & 254); // зануляем 1 младший бит
-                current = (current | (info & 1)); // записываем в текущий цвет новую информацию
-                info = info >> 1;
-                rgb[count] = (byte) current;
-                count++;
-            }
-            // записываем values[i]
-            arg = values[i];
-            for (int j = 0; j < values[i].bitLength(); j++) {
-                current = (rgb[count] & 0xFF);
-                current = (current & 254); // зануляем 1 младший бит
-                current = (arg.and(BigInteger.ONE)).or(BigInteger.valueOf(current)).intValue(); // записываем в текущий цвет новую информацию
-                arg = arg.shiftRight(1);
-                rgb[count] = (byte) current;
-                count++;
-            }
         }
     }
 
@@ -121,6 +100,7 @@ public class Embedding {
             throw new SteganographyException("Couldn't save to file");
         }
     }
+    private int count;
     private byte head[];
     private byte infohead[];
     private byte rgb[];

@@ -40,65 +40,47 @@ public class Extraction {
         bitcount = (((int) infohead[15] & 0xff) << 8) | (int) infohead[14] & 0xff;
         int sizeimage = (((int) infohead[23] & 0xff) << 24) | (((int) infohead[22] & 0xff) << 16) | (((int) infohead[21] & 0xff) << 8) | (int) infohead[20] & 0xff;
         pad = (sizeimage / height) - width * 3;
+        count = 0;
     }
 
     public void getShares() {
-        int length = 0;
-        for (int i = 0; i < 32; i++) {
-            int current = (rgb[i] & 0xFF);
-            current = (current & 1); // обнуляем всё кроме 1 бита
-            current = current << i;
-            length = length | current;
-        }
-        int count = 32;
-        BigInteger arg;
+        int length = readInt();
         args = new BigInteger[length];
         values = new BigInteger[length];
-        int info;
-
         for (int i = 0; i < length; i++) {
-            info = 0;
-            for (int j = 0; j < 32; j++) {
-                int current = (rgb[count] & 0xFF);
-                current = (current & 1); // обнуляем всё кроме 1 бита
-                current = current << j;
-                info = info | current;
-                count++;
-            }
-            arg = BigInteger.valueOf(0);
-            for (int j = 0; j < info; j++) {
-                BigInteger current = BigInteger.valueOf(rgb[count] & 0xFF);
-                current = current.and(BigInteger.ONE); // обнуляем всё кроме 1 бита
-                current = current.shiftLeft(j);
-                arg = arg.or(current);
-                count++;
-            }
-            args[i] = arg;
-            info = 0;
-            for (int j = 0; j < 32; j++) {
-                int current = (rgb[count] & 0xFF);
-                current = (current & 1); // обнуляем всё кроме 1 бита
-                current = current << j;
-                info = info | current;
-                count++;
-            }
-
-            arg = BigInteger.valueOf(0);
-            for (int j = 0; j < info; j++) {
-                BigInteger current = BigInteger.valueOf(rgb[count] & 0xFF);
-                current = current.and(BigInteger.ONE); // обнуляем всё кроме 1 бита
-                current = current.shiftLeft(j);
-                arg = arg.or(current);
-                count++;
-            }
-            values[i] = arg;
+            args[i] = readBigInteger(readInt());
+            values[i] = readBigInteger(readInt());
         }
-        for (int i=0; i<length; i++)
-        {
+        for (int i = 0; i < length; i++) {
             System.out.println(args[i].toString());
             System.out.println(values[i].toString());
         }
     }
+
+    private BigInteger readBigInteger(int length) {
+        BigInteger info = BigInteger.valueOf(0);
+        for (int j = 0; j < length; j++) {
+            BigInteger current = BigInteger.valueOf(rgb[count] & 0xFF);
+            current = current.and(BigInteger.ONE); // обнуляем всё кроме 1 бита
+            current = current.shiftLeft(j);
+            info = info.or(current);
+            count++;
+        }
+        return info;
+    }
+
+    private int readInt() {
+        int info = 0;
+        for (int i = 0; i < 32; i++) {
+            int current = (rgb[count] & 0xFF);
+            current = (current & 1); // обнуляем всё кроме 1 бита
+            current = current << i;
+            info = info | current;
+            count++;
+        }
+        return info;
+    }
+    private int count;
     private byte head[];
     private byte infohead[];
     private byte rgb[];
