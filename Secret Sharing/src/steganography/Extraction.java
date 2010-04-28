@@ -34,13 +34,30 @@ public class Extraction {
         } catch (IOException ex) {
             throw new SteganographyException("Image is broken");
         }
-
+        w = h = 0;
         width = (((int) infohead[7] & 0xff) << 24) | (((int) infohead[6] & 0xff) << 16) | (((int) infohead[5] & 0xff) << 8) | (int) infohead[4] & 0xff;
         height = (((int) infohead[11] & 0xff) << 24) | (((int) infohead[10] & 0xff) << 16) | (((int) infohead[9] & 0xff) << 8) | (int) infohead[8] & 0xff;
         bitcount = (((int) infohead[15] & 0xff) << 8) | (int) infohead[14] & 0xff;
         int sizeimage = (((int) infohead[23] & 0xff) << 24) | (((int) infohead[22] & 0xff) << 16) | (((int) infohead[21] & 0xff) << 8) | (int) infohead[20] & 0xff;
         pad = (sizeimage / height) - width * 3;
         count = 0;
+    }
+
+    private int byteArrayToInt(byte[] b) {
+        int value = 0;
+        for (int i = 0; i < 4; i++) {
+            int shift = (4 - 1 - i) * 8;
+            value += (b[i] & 0x000000FF) << shift;
+        }
+        return value;
+    }
+
+
+    protected void readPortationInformation() {
+        byte[] hByte = {infohead[24], infohead[25], infohead[26], infohead[27]};
+        byte[] wByte = {infohead[28], infohead[29], infohead[30], infohead[31]};
+        w = byteArrayToInt(wByte);
+        h = byteArrayToInt(hByte);
     }
 
     public void getShares() {
@@ -80,6 +97,8 @@ public class Extraction {
         }
         return info;
     }
+    protected int w;
+    protected int h;
     private int count;
     private byte head[];
     private byte infohead[];

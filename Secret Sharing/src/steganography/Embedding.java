@@ -84,19 +84,17 @@ public class Embedding {
 
     }
 
+    private byte[] intToByteArray(int value) {
+        return new byte[]{
+                    (byte) (value >>> 24), (byte) (value >> 16 & 0xff), (byte) (value >> 8 & 0xff), (byte) (value & 0xff)};
+    }
+
     private void writePortationInformation(int w, int h) {
-        int mask = Integer.MAX_VALUE;
-        int tmp1;
-        int tmp2;
-        mask = mask << 24;
-        for (int i = 0; i < 4; i++) {
-            tmp1 = mask & w;
-            tmp2 = mask & h;
-            tmp1 = tmp1 >> 24;
-            tmp2 = tmp2 >> 24;
-            infohead[24+i] = (byte) tmp1;
-            infohead[28+i] = (byte) tmp2;
-            mask = mask >> 8;
+       byte[] hByte = intToByteArray(h);
+       byte[] wByte = intToByteArray(w);
+        for (int i = 0; i < 4; i++) { 
+            infohead[24 + i] = hByte[i];
+            infohead[28 + i] = wByte[i];
         }
     }
 
