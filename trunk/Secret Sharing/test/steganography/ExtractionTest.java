@@ -53,4 +53,19 @@ public class ExtractionTest {
         assertEquals(new BigInteger("1010040080080032"), result);
     }
 
+    @Test
+    public void testReadPortationInformation()  {
+        System.out.println("readPortInfo");
+        Extraction instance = null;
+        try {
+            instance = new Extraction("11.bmp");
+        } catch (SteganographyException ex) {
+            Logger.getLogger(ExtractionTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        instance.readPortationInformation();
+        int result =instance.w;
+        assertEquals(320, result);
+    }
+
+
 }
