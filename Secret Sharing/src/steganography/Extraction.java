@@ -44,13 +44,29 @@ public class Extraction {
         mask = (byte) 'v';
     }
 
-    private int byteArrayToInt(byte[] b) {
-        int value = 0;
-        for (int i = 0; i < 4; i++) {
-            int shift = (4 - 1 - i) * 8;
-            value += (b[i] & 0x000000FF) << shift;
+    public void getSharesFromSubimages(int n) {
+        readPortationInformation();
+        args = new BigInteger[n];
+        values = new BigInteger[n];
+        bitCount = 1;
+        int begin = rgb.length - 1;
+        for (int j = 0; j < args.length; j++) {
+            readShareFromSubimage(j, begin);
+            if ((begin - w * 3) % width == 0) {
+                begin -= width * (h - 1) * 3 - w * 3;
+            } else {
+                begin -= w * 3;
+            }
         }
-        return value;
+    }
+
+    private void readShareFromSubimage(int index, int begin) {
+        count = begin;
+        readMask();
+        int length = readIntFromSubimage();
+        args[index] = readBigIntegerFromSubimage(length);
+        length = readIntFromSubimage();
+        values[index] = readBigIntegerFromSubimage(length);
     }
 
     protected void readPortationInformation() {
@@ -60,104 +76,73 @@ public class Extraction {
         h = byteArrayToInt(hByte);
     }
 
-    public void getSharesFromSubimages(int n) {
-        readPortationInformation();
-        args = new BigInteger[n];
-        values = new BigInteger[n];
-        int begin = rgb.length - 1;
-        for (int j = 0; j < args.length; j++) {
-            readShareFromSubimage(j, begin);
-            if ((begin - w * 3) % width == 0) {
-                begin -= width * (h - 1) * 3 - w * 3;
-            } else {
-                begin -= w * 3;
-            }
-
+    private int byteArrayToInt(byte[] b) {
+        int value = 0;
+        for (int i = 0; i < 4; i++) {
+            int shift = (4 - 1 - i) * 8;
+            value += (b[i] & 0x000000FF) << shift;
         }
+        return value;
     }
 
-    private void readShareFromSubimage(int index, int begin) {
-        int k = begin;
+    private boolean readMask() {    
         byte m = 0;
         int current;
-        int c = 1;
-
-        // читаем маску
+        bitCount = 1;
         for (int j = 0; j < 8; j++) {
-            current = (rgb[k] & 0xFF);
+            current = (rgb[count] & 0xFF);
             current = (current & 1); // обнуляем всё кроме 1 бита
             current = current << j;
             m = (byte) (m | current);
-            if (c == w * 3) {
-                k = k - width * 3 + w * 3 - 1;
-                c = 1;
+            if (bitCount == w * 3) {
+                count = count - width * 3 + w * 3 - 1;
+                bitCount = 1;
             } else {
-                k--;
-                c++;
+                count--;
+                bitCount++;
             }
         }
+        if (m == mask) {
+            return true;
+        }
+        return false;
+    }
 
+    private int readIntFromSubimage() {
         int info = 0;
+        int current = 0;
         for (int j = 0; j < 32; j++) {
-            current = (rgb[k] & 0xFF);
+            current = (rgb[count] & 0xFF);
             current = (current & 1); // обнуляем всё кроме 1 бита
             current = current << j;
-            info =  info | current;
-            if (c == w * 3) {
-                k = k - width * 3 + w * 3 - 1;
-                c = 1;
+            info = info | current;
+            if (bitCount == w * 3) {
+                count = count - width * 3 + w * 3 - 1;
+                bitCount = 1;
             } else {
-                k--;
-                c++;
+                count--;
+                bitCount++;
             }
         }
+        return info;
+    }
 
+    private BigInteger readBigIntegerFromSubimage(int length) {
         BigInteger bigInfo = BigInteger.valueOf(0);
-        for (int j = 0; j < info; j++) {
-            BigInteger bigCurrent = BigInteger.valueOf(rgb[k] & 0xFF);
+        for (int j = 0; j < length; j++) {
+            BigInteger bigCurrent = BigInteger.valueOf(rgb[count] & 0xFF);
             bigCurrent = bigCurrent.and(BigInteger.ONE); // обнуляем всё кроме 1 бита
             bigCurrent = bigCurrent.shiftLeft(j);
             bigInfo = bigInfo.or(bigCurrent);
-            if (c == w * 3) {
-                k = k - width * 3 + w * 3 - 1;
-                c = 1;
+            if (bitCount == w * 3) {
+                count = count - width * 3 + w * 3 - 1;
+                bitCount = 1;
             } else {
-                k--;
-                c++;
+                count--;
+                bitCount++;
             }
         }
-        args[index] = bigInfo;
-
-        info = 0;
-        for (int j = 0; j < 32; j++) {
-            current = (rgb[k] & 0xFF);
-            current = (current & 1); // обнуляем всё кроме 1 бита
-            current = current << j;
-            info =  info | current;
-            if (c == w * 3) {
-                k = k - width * 3 + w * 3 - 1;
-                c = 1;
-            } else {
-                k--;
-                c++;
-            }
-        }
-
-        bigInfo = BigInteger.valueOf(0);
-        for (int j = 0; j < info; j++) {
-            BigInteger bigCurrent = BigInteger.valueOf(rgb[k] & 0xFF);
-            bigCurrent = bigCurrent.and(BigInteger.ONE); // обнуляем всё кроме 1 бита
-            bigCurrent = bigCurrent.shiftLeft(j);
-            bigInfo = bigInfo.or(bigCurrent);
-            if (c == w * 3) {
-                k = k - width * 3 + w * 3 - 1;
-                c = 1;
-            } else {
-                k--;
-                c++;
-            }
-        }
-        values[index] = bigInfo;
+        return bigInfo;
     }
 
     public void getShares() {
@@ -197,6 +182,7 @@ public class Extraction {
         }
         return info;
     }
+    private int bitCount;
     protected int w;
     protected int h;
     private int count;
