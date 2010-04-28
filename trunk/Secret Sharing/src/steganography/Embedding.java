@@ -46,18 +46,6 @@ public class Embedding {
         mask = (byte) 'v';
     }
 
-    private byte[] getSubImages(int h, int w, int index) {
-        byte[] subimage = new byte[h * w * 3];
-        int k = index;
-        for (int i = 0; i < subimage.length; i++) {
-            for (int j = 0; j < w * 3; j++) {
-                subimage[i] = rgb[k + j];
-            }
-            k += width * 3;
-        }
-        return subimage;
-    }
-
     public void writeSharesToSubImages(BigInteger[] args, BigInteger[] values) throws SteganographyException {
         int wn = ((int) java.lang.Math.sqrt(args.length));
         int hn;
@@ -68,11 +56,12 @@ public class Embedding {
         }
         w = width / wn;
         h = height / hn;
-        if (!correctPortation(args, values)) {
+        if (!isPortationCorrect(args, values)) {
             throw new SteganographyException("Couldn't write code to this image");
         }
         writePortationInformation(w, h);
         int begin = rgb.length - 1;
+        bitCount = 1;
         for (int j = 0; j < args.length; j++) {
             writeShareToSubimage(args[j], values[j], begin);
             if ((begin - w * 3) % width == 0) {
@@ -81,7 +70,24 @@ public class Embedding {
                 begin -= w * 3;
             }
         }
+    }
 
+    private void writeShareToSubimage(BigInteger arg, BigInteger value, int begin) {
+        count = begin;
+        writeMask();
+        writeIntToSubimage(arg.bitLength());
+        writeBigIntegerToSubimage(arg);
+        writeIntToSubimage(value.bitLength());
+        writeBigIntegerToSubimage(value);
+    }
+
+    private void writePortationInformation(int w, int h) {
+        byte[] hByte = intToByteArray(h);
+        byte[] wByte = intToByteArray(w);
+        for (int i = 0; i < 4; i++) {
+            infohead[24 + i] = hByte[i];
+            infohead[28 + i] = wByte[i];
+        }
     }
 
     private byte[] intToByteArray(int value) {
@@ -89,16 +95,7 @@ public class Embedding {
                     (byte) (value >>> 24), (byte) (value >> 16 & 0xff), (byte) (value >> 8 & 0xff), (byte) (value & 0xff)};
     }
 
-    private void writePortationInformation(int w, int h) {
-       byte[] hByte = intToByteArray(h);
-       byte[] wByte = intToByteArray(w);
-        for (int i = 0; i < 4; i++) { 
-            infohead[24 + i] = hByte[i];
-            infohead[28 + i] = wByte[i];
-        }
-    }
-
-    private boolean correctPortation(BigInteger[] args, BigInteger[] values) {
+    private boolean isPortationCorrect(BigInteger[] args, BigInteger[] values) {
         int i = findMax(args);
         int j = findMax(values);
         int maxLengthArgs = args[i].bitLength() + values[i].bitLength() + 64 + 8;
@@ -120,85 +117,60 @@ public class Embedding {
         return max;
     }
 
-    private void writeShareToSubimage(BigInteger arg, BigInteger value, int begin) {
-        int k = begin;
+    private void writeMask() {
         byte m = mask;
         int current;
-        int c = 1;
+        bitCount = 1;
         for (int j = 0; j < 8; j++) {
-            current = (rgb[k] & 0xFF);
+            current = (rgb[count] & 0xFF);
             current = (current & 254); // зануляем 1 младший бит
             current = (current | (m & 1)); // записываем в текущий цвет новую информацию
             m = (byte) (m >> 1);
-            rgb[k] = (byte) current;
-            if (c == w * 3) {
-                k = k - width * 3 + w * 3 - 1;
-                c = 1;
+            rgb[count] = (byte) current;
+            if (bitCount == w * 3) {
+                count = count - width * 3 + w * 3 - 1;
+                bitCount = 1;
             } else {
-                k--;
-                c++;
+                count--;
+                bitCount++;
             }
         }
-        int info = arg.bitLength();
+    }
+
+    private void writeIntToSubimage(int info) {
+        int current;
         for (int j = 0; j < 32; j++) {
-            current = (rgb[k] & 0xFF);
+            current = (rgb[count] & 0xFF);
             current = (current & 254); // зануляем 1 младший бит
             current = (current | (info & 1)); // записываем в текущий цвет новую информацию
             info = info >> 1;
-            rgb[k] = (byte) current;
-            if (c == w * 3) {
-                k = k - width * 3 + w * 3 - 1;
-                c = 1;
+            rgb[count] = (byte) current;
+            if (bitCount == w * 3) {
+                count = count - width * 3 + w * 3 - 1;
+                bitCount = 1;
             } else {
-                k--;
-                c++;
+                count--;
+                bitCount++;
             }
         }
+    }
+
+    private void writeBigIntegerToSubimage(BigInteger arg) {
         int length = arg.bitLength();
+        int current;
         BigInteger bigInfo = arg;
         for (int j = 0; j < length; j++) {
-            current = (rgb[k] & 0xFF);
+            current = (rgb[count] & 0xFF);
             current = (current & 254); // зануляем 1 младший бит
             current = (bigInfo.and(BigInteger.ONE)).or(BigInteger.valueOf(current)).intValue(); // записываем в текущий цвет новую информацию
             bigInfo = bigInfo.shiftRight(1);
-            rgb[k] = (byte) current;
-            if (c == w * 3) {
-                k = k - width * 3 + w * 3 - 1;
-                c = 1;
+            rgb[count] = (byte) current;
+            if (bitCount == w * 3) {
+                count = count - width * 3 + w * 3 - 1;
+                bitCount = 1;
             } else {
-                k--;
-                c++;
-            }
-        }
-        info = value.bitLength();
-        for (int j = 0; j < 32; j++) {
-            current = (rgb[k] & 0xFF);
-            current = (current & 254); // зануляем 1 младший бит
-            current = (current | (info & 1)); // записываем в текущий цвет новую информацию
-            info = info >> 1;
-            rgb[k] = (byte) current;
-            if (c == w * 3) {
-                k = k - width * 3 + w * 3 - 1;
-                c = 1;
-            } else {
-                k--;
-                c++;
-            }
-        }
-        length = value.bitLength();
-        bigInfo = value;
-        for (int j = 0; j < length; j++) {
-            current = (rgb[k] & 0xFF);
-            current = (current & 254); // зануляем 1 младший бит
-            current = (bigInfo.and(BigInteger.ONE)).or(BigInteger.valueOf(current)).intValue(); // записываем в текущий цвет новую информацию
-            bigInfo = bigInfo.shiftRight(1);
-            rgb[k] = (byte) current;
-            if (c == w * 3) {
-                k = k - width * 3 + w * 3 - 1;
-                c = 1;
-            } else {
-                k--;
-                c++;
+                count--;
+                bitCount++;
             }
         }
     }
@@ -268,6 +240,19 @@ public class Embedding {
             throw new SteganographyException("Couldn't save to file");
         }
     }
+
+    private byte[] getSubImages(int h, int w, int index) {
+        byte[] subimage = new byte[h * w * 3];
+        int k = index;
+        for (int i = 0; i < subimage.length; i++) {
+            for (int j = 0; j < w * 3; j++) {
+                subimage[i] = rgb[k + j];
+            }
+            k += width * 3;
+        }
+        return subimage;
+    }
+    private int bitCount;
     private byte mask;
     private int w;
     private int h;
