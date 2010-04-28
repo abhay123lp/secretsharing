@@ -48,7 +48,7 @@ public class ExtractionTest {
         } catch (SteganographyException ex) {
             Logger.getLogger(ExtractionTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        instance.getShares();
+        instance.getSharesFromSubimages(5);
         BigInteger result = instance.values[2];
         assertEquals(new BigInteger("1010040080080032"), result);
     }
