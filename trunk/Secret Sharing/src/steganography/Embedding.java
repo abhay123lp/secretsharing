@@ -46,24 +46,6 @@ public class Embedding {
         mask = (byte) 'v';
     }
 
-    public void writeShares(BigInteger[] args, BigInteger[] values) throws SteganographyException {
-        if (bitcount != 24) {
-            throw new SteganographyException("Not 24-bit format");
-        }
-        writeInt(args.length, count, rgb);
-        count += 32;
-        for (int i = 0; i < args.length; i++) {
-            writeInt(args[i].bitLength(), count, rgb);
-            count += 32;
-            writeBigInteger(args[i], count, rgb);
-            count += args[i].bitLength();
-            writeInt(values[i].bitLength(), count, rgb);
-            count += 32;
-            writeBigInteger(values[i], count, rgb);
-            count += values[i].bitLength();
-        }
-    }
-
     private byte[] getSubImages(int h, int w, int index) {
         byte[] subimage = new byte[h * w * 3];
         int k = index;
@@ -86,10 +68,10 @@ public class Embedding {
         }
         w = width / wn;
         h = height / hn;
-        if (checkPortatin(args, values)) {
+        if (!correctPortation(args, values)) {
             throw new SteganographyException("Couldn't write code to this image");
         }
-
+        writePortationInformation(w, h);
         int begin = rgb.length - 1;
         for (int j = 0; j < args.length; j++) {
             writeShareToSubimage(args[j], values[j], begin);
@@ -102,7 +84,23 @@ public class Embedding {
 
     }
 
-    private boolean checkPortatin(BigInteger[] args, BigInteger[] values) {
+    private void writePortationInformation(int w, int h) {
+        int mask = Integer.MAX_VALUE;
+        int tmp1;
+        int tmp2;
+        mask = mask << 24;
+        for (int i = 0; i < 4; i++) {
+            tmp1 = mask & w;
+            tmp2 = mask & h;
+            tmp1 = tmp1 >> 24;
+            tmp2 = tmp2 >> 24;
+            infohead[24+i] = (byte) tmp1;
+            infohead[28+i] = (byte) tmp2;
+            mask = mask >> 8;
+        }
+    }
+
+    private boolean correctPortation(BigInteger[] args, BigInteger[] values) {
         int i = findMax(args);
         int j = findMax(values);
         int maxLengthArgs = args[i].bitLength() + values[i].bitLength() + 64 + 8;
@@ -204,6 +202,24 @@ public class Embedding {
                 k--;
                 c++;
             }
+        }
+    }
+
+    public void writeShares(BigInteger[] args, BigInteger[] values) throws SteganographyException {
+        if (bitcount != 24) {
+            throw new SteganographyException("Not 24-bit format");
+        }
+        writeInt(args.length, count, rgb);
+        count += 32;
+        for (int i = 0; i < args.length; i++) {
+            writeInt(args[i].bitLength(), count, rgb);
+            count += 32;
+            writeBigInteger(args[i], count, rgb);
+            count += args[i].bitLength();
+            writeInt(values[i].bitLength(), count, rgb);
+            count += 32;
+            writeBigInteger(values[i], count, rgb);
+            count += values[i].bitLength();
         }
     }
 
