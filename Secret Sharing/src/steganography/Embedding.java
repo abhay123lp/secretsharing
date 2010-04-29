@@ -12,6 +12,8 @@ import steganographyException.SteganographyException;
 
 public class Embedding {
 
+    public String[] hashMeans;
+
     public Embedding(String filename) throws SteganographyException {
 
         FileInputStream image = null;
@@ -44,6 +46,7 @@ public class Embedding {
         w = 0;
         h = 0;
         mask = (byte) 'v';
+        hash = new Hash();
     }
 
     public void writeSharesToSubImages(BigInteger[] args, BigInteger[] values) throws SteganographyException {
@@ -59,10 +62,12 @@ public class Embedding {
         if (!isPortationCorrect(args, values)) {
             throw new SteganographyException("Couldn't write code to this image");
         }
+        hashMeans = new String[args.length];
         writePortationInformation(w, h);
         int begin = rgb.length - 1;
         bitCount = 1;
         for (int j = 0; j < args.length; j++) {
+            hashMeans[j] = hash.getHash(getSubImages(h, w, begin));
             writeShareToSubimage(args[j], values[j], begin);
             if ((begin - w * 3) % width == 0) {
                 begin -= width * (h - 1) * 3 - w * 3;
@@ -70,6 +75,8 @@ public class Embedding {
                 begin -= w * 3;
             }
         }
+        //  for (int i=0; i<hashMeans.length; i++)
+        //      System.out.println(hashMeans[i]);
     }
 
     private void writeShareToSubimage(BigInteger arg, BigInteger value, int begin) {
@@ -244,14 +251,15 @@ public class Embedding {
     private byte[] getSubImages(int h, int w, int index) {
         byte[] subimage = new byte[h * w * 3];
         int k = index;
-        for (int i = 0; i < subimage.length; i++) {
+        for (int i = 0; i < h; i++) {
             for (int j = 0; j < w * 3; j++) {
-                subimage[i] = rgb[k + j];
+                subimage[i] = rgb[k - j];
             }
-            k += width * 3;
+            k -= width * 3;
         }
         return subimage;
     }
+    private Hash hash;
     private int bitCount;
     private byte mask;
     private int w;
