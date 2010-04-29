@@ -67,6 +67,8 @@ public class Extraction {
                 } else {
                     begin--;
                 }
+            } else {
+                begin--;
             }
         }
     }
