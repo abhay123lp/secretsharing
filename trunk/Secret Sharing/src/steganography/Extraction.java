@@ -12,7 +12,7 @@ public class Extraction {
     public BigInteger args[];
     public BigInteger values[];
 
-    public Extraction(String filename) throws SteganographyException {
+    public Extraction(String filename, String[] hashMeans) throws SteganographyException {
         args = null;
         values = null;
         FileInputStream image = null;
@@ -42,6 +42,10 @@ public class Extraction {
         pad = (sizeimage / height) - width * 3;
         count = 0;
         mask = (byte) 'v';
+        this.hashMeans = new String[hashMeans.length];
+        for (int i = 0; i < hashMeans.length; i++) {
+            this.hashMeans[i] = hashMeans[i];
+        }
     }
 
     public void getSharesFromSubimages(int n) {
@@ -85,7 +89,7 @@ public class Extraction {
         return value;
     }
 
-    private boolean readMask() {    
+    private boolean readMask() {
         byte m = 0;
         int current;
         bitCount = 1;
@@ -182,6 +186,7 @@ public class Extraction {
         }
         return info;
     }
+    private String[] hashMeans;
     private int bitCount;
     protected int w;
     protected int h;
