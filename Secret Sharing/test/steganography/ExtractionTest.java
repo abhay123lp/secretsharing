@@ -1,7 +1,6 @@
 /*
  * Tests for Extraction.java
  */
-
 package steganography;
 
 import java.math.BigInteger;
@@ -30,6 +29,19 @@ public class ExtractionTest {
 
     @Before
     public void setUp() {
+        try {
+            BigInteger[] args = new BigInteger[5];
+            BigInteger[] values = new BigInteger[5];
+            for (int i = 0; i < 5; i++) {
+                args[i] = BigInteger.valueOf(i + 1000);
+                values[i] = args[i].pow(5);
+            }
+            emb = new Embedding("1.bmp");
+            emb.writeSharesToSubImages(args, values);
+            emb.saveToFile("11.bmp");
+        } catch (SteganographyException ex) {
+            Logger.getLogger(ExtractionTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @After
@@ -40,32 +52,34 @@ public class ExtractionTest {
      * Test of getShares method, of class Extraction.
      */
     @Test
-    public void testGetShares()  {
-        System.out.println("getShares");
-        Extraction instance = null;
+    public void testGetShares() {
         try {
-            instance = new Extraction("11.bmp");
+            System.out.println("getShares");
+            Extraction instance = null;
+
+
+            instance = new Extraction("11.bmp", emb.hashMeans);
+            instance.getSharesFromSubimages(5);
+            BigInteger result = instance.values[2];
+            assertEquals(new BigInteger("1010040080080032"), result);
         } catch (SteganographyException ex) {
             Logger.getLogger(ExtractionTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        instance.getSharesFromSubimages(5);
-        BigInteger result = instance.values[2];
-        assertEquals(new BigInteger("1010040080080032"), result);
     }
 
     @Test
-    public void testReadPortationInformation()  {
+    public void testReadPortationInformation() {
         System.out.println("readPortInfo");
         Extraction instance = null;
         try {
-            instance = new Extraction("11.bmp");
+            instance = new Extraction("11.bmp", emb.hashMeans);
         } catch (SteganographyException ex) {
             Logger.getLogger(ExtractionTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         instance.readPortationInformation();
-        int result =instance.w;
+        int result = instance.w;
         assertEquals(320, result);
     }
 
-
+    public Embedding emb;
 }
