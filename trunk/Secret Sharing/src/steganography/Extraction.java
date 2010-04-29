@@ -46,6 +46,7 @@ public class Extraction {
         for (int i = 0; i < hashMeans.length; i++) {
             this.hashMeans[i] = hashMeans[i];
         }
+        hash = new Hash();
     }
 
     public void getSharesFromSubimages(int n) {
@@ -55,18 +56,24 @@ public class Extraction {
         bitCount = 1;
         int begin = rgb.length - 1;
         for (int j = 0; j < args.length; j++) {
-            readShareFromSubimage(j, begin);
-            if ((begin - w * 3) % width == 0) {
-                begin -= width * (h - 1) * 3 - w * 3;
-            } else {
-                begin -= w * 3;
+            if (mask == readMask(begin)) {
+                if (isEqualHash(hash.getHash(getSubImages(h, w, begin)))) {
+                    readShareFromSubimage(j, begin);
+                    if ((begin - w * 3) % width == 0) {
+                        begin -= width * (h - 1) * 3 - w * 3;
+                    } else {
+                        begin -= w * 3;
+                    }
+                } else {
+                    begin--;
+                }
             }
         }
     }
 
     private void readShareFromSubimage(int index, int begin) {
         count = begin;
-        readMask();
+        readMask(count);
         int length = readIntFromSubimage();
         args[index] = readBigIntegerFromSubimage(length);
         length = readIntFromSubimage();
@@ -89,9 +96,10 @@ public class Extraction {
         return value;
     }
 
-    private boolean readMask() {
+    private byte readMask(int begin) {
         byte m = 0;
         int current;
+        count = begin;
         bitCount = 1;
         for (int j = 0; j < 8; j++) {
             current = (rgb[count] & 0xFF);
@@ -106,10 +114,7 @@ public class Extraction {
                 bitCount++;
             }
         }
-        if (m == mask) {
-            return true;
-        }
-        return false;
+        return m;
     }
 
     private int readIntFromSubimage() {
@@ -186,6 +191,27 @@ public class Extraction {
         }
         return info;
     }
+
+    private byte[] getSubImages(int h, int w, int index) {
+        byte[] subimage = new byte[h * w * 3];
+        int k = index;
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w * 3; j++) {
+                subimage[i] = rgb[k - j];
+            }
+            k -= width * 3;
+        }
+        return subimage;
+    }
+
+    private boolean isEqualHash(String hash) {
+        for (int i = 0; i < hashMeans.length; i++) {
+            if (hash.equals(hashMeans[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
     private String[] hashMeans;
     private int bitCount;
     protected int w;
@@ -199,4 +225,5 @@ public class Extraction {
     private int bitcount;
     private int pad;
     private byte mask;
+    private Hash hash;
 }
