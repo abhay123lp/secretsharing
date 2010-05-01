@@ -63,14 +63,14 @@ public class Embedding {
             throw new SteganographyException("Couldn't write code to this image");
         }
         hashMeans = new String[args.length];
-        writePortationInformation(w, h);
+     //   writePortationInformation(w, h);
         int begin = rgb.length - 1;
         bitCount = 1;
         for (int j = 0; j < args.length; j++) {
             hashMeans[j] = hash.getHash(getSubImages(h, w, begin));
             writeShareToSubimage(args[j], values[j], begin);
-            if ((begin - w * 3) % width == 0) {
-                begin -= width * (h - 1) * 3 - w * 3;
+           if ((begin - w * 3 + 1) % width == 0) {
+                begin -= width * (h - 1) * 3 + w * 3;
             } else {
                 begin -= w * 3;
             }
@@ -82,6 +82,8 @@ public class Embedding {
     private void writeShareToSubimage(BigInteger arg, BigInteger value, int begin) {
         count = begin;
         writeMask();
+        writeIntToSubimage(w);
+        writeIntToSubimage(h);
         writeIntToSubimage(arg.bitLength());
         writeBigIntegerToSubimage(arg);
         writeIntToSubimage(value.bitLength());
@@ -105,8 +107,8 @@ public class Embedding {
     private boolean isPortationCorrect(BigInteger[] args, BigInteger[] values) {
         int i = findMax(args);
         int j = findMax(values);
-        int maxLengthArgs = args[i].bitLength() + values[i].bitLength() + 64 + 8;
-        int maxLengthValues = args[j].bitLength() + values[j].bitLength() + 64 + 8;
+        int maxLengthArgs = args[i].bitLength() + values[i].bitLength() + 128 + 8;
+        int maxLengthValues = args[j].bitLength() + values[j].bitLength() + 128 + 8;
         if ((maxLengthArgs > h * w * 3) || (maxLengthValues > h * w * 3)) {
             return false;
         } else {
