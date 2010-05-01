@@ -49,20 +49,31 @@ public class Extraction {
         hash = new Hash();
     }
 
-    public void getSharesFromSubimages(int n) {
-        readPortationInformation();
-        args = new BigInteger[n];
-        values = new BigInteger[n];
+    public void getSharesFromSubimages(int n, int k) throws SteganographyException {
+        //      readPortationInformation();
+        args = new BigInteger[k];
+        values = new BigInteger[k];
         bitCount = 1;
         int begin = rgb.length - 1;
-        for (int j = 0; j < args.length; j++) {
+        int j = 0;
+        while (begin > 136) {
             if (mask == readMask(begin)) {
+                w = readIntFromSubimage();
+                h = readIntFromSubimage();
+                if ((h <= 0) || (w <= 0) || (h > rgb.length - 1) || (w > rgb.length - 1) || (h * w * 3 * n > rgb.length - 1)) {
+                    begin--;
+                    continue;
+                }
                 if (isEqualHash(hash.getHash(getSubImages(h, w, begin)))) {
-                    readShareFromSubimage(j, begin);
-                    if ((begin - w * 3) % width == 0) {
-                        begin -= width * (h - 1) * 3 - w * 3;
+                    readShareFromSubimage(j);
+                    j++;
+                    if ((begin - w * 3 + 1) % width == 0) {
+                        begin -= width * (h - 1) * 3 + w * 3;
                     } else {
                         begin -= w * 3;
+                    }
+                    if ((j == k)) {
+                        return;
                     }
                 } else {
                     begin--;
@@ -71,11 +82,10 @@ public class Extraction {
                 begin--;
             }
         }
+        throw new SteganographyException("Restore " + j +" shares!");
     }
 
-    private void readShareFromSubimage(int index, int begin) {
-        count = begin;
-        readMask(count);
+    private void readShareFromSubimage(int index) {
         int length = readIntFromSubimage();
         args[index] = readBigIntegerFromSubimage(length);
         length = readIntFromSubimage();
