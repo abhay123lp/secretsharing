@@ -13,6 +13,8 @@ import steganographyException.SteganographyException;
 public class Embedding {
 
     public String[] hashMeans;
+    public byte head[];
+    public byte infohead[];
 
     public Embedding(String filename) throws SteganographyException {
 
@@ -49,6 +51,10 @@ public class Embedding {
         hash = new Hash();
     }
 
+    public byte[] getRgb() {
+        return rgb;
+    }
+
     public void writeSharesToSubImages(BigInteger[] args, BigInteger[] values) throws SteganographyException {
         int wn = ((int) java.lang.Math.sqrt(args.length));
         int hn;
@@ -63,13 +69,13 @@ public class Embedding {
             throw new SteganographyException("Couldn't write code to this image");
         }
         hashMeans = new String[args.length];
-     //   writePortationInformation(w, h);
+        //   writePortationInformation(w, h);
         int begin = rgb.length - 1;
         bitCount = 1;
         for (int j = 0; j < args.length; j++) {
             hashMeans[j] = hash.getHash(getSubImages(h, w, begin));
             writeShareToSubimage(args[j], values[j], begin);
-           if ((begin - w * 3 + 1) % width == 0) {
+            if ((begin - w * 3 + 1) % width == 0) {
                 begin -= width * (h - 1) * 3 + w * 3;
             } else {
                 begin -= w * 3;
@@ -267,8 +273,6 @@ public class Embedding {
     private int w;
     private int h;
     private int count;
-    private byte head[];
-    private byte infohead[];
     private byte rgb[];
     private int width;
     private int height;
