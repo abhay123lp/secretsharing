@@ -3,7 +3,6 @@
  */
 package steganography;
 
-import java.math.BigInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -42,8 +41,8 @@ public class ExtractionTest {
         try {
             System.out.println("getShares");
             Extraction instance = null;
-            instance = new Extraction("11.bmp", "properties.txt");
-            instance.getSharesFromSubimages(3);
+            instance = new Extraction("11.bmp", "properties");
+            instance.getSharesFromSubimages(10);
         } catch (SteganographyException ex) {
             Logger.getLogger(ExtractionTest.class.getName()).log(Level.SEVERE, null, ex);
         }

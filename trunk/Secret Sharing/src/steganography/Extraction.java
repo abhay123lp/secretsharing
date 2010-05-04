@@ -58,16 +58,16 @@ public class Extraction {
             throw new SteganographyException("Couldn't open " + hashFilename + " file");
         }
         String read;
-   
+
         try {
             while ((read = bufFile.readLine()) != null) {
-               list.addLast(read);
+                list.addLast(read);
             }
         } catch (IOException ex) {
             throw new SteganographyException(ex.getMessage());
         }
-           hashMeans = new String[list.size()];
-           hashMeans= list.toArray(new String[0]);
+        hashMeans = new String[list.size()];
+        hashMeans = list.toArray(new String[0]);
     }
 
     public void getSharesFromSubimages(int threshold) throws SteganographyException {
@@ -88,11 +88,7 @@ public class Extraction {
                 if (isEqualHash(hash.getHash(getSubImages(h, w, begin)))) {
                     readShareFromSubimage(j);
                     j++;
-                    if ((begin - w * 3 + 1) % width == 0) {
-                        begin -= width * (h - 1) * 3 + w * 3;
-                    } else {
-                        begin -= w * 3;
-                    }
+                   begin--;
                     if ((j == threshold)) {
                         return;
                     }
