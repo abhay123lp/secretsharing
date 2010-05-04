@@ -13,9 +13,14 @@ package userInterface;
 import java.awt.FileDialog;
 import java.awt.Image;
 import java.io.*;
+import java.math.BigInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import secretsharing.Sharing;
+import secretsharingException.SharingException;
 import steganography.Embedding;
 import steganographyException.SteganographyException;
 
@@ -131,7 +136,7 @@ public class Frame extends javax.swing.JFrame {
             return;
         }
         filename = fd.getDirectory() + fd.getFile();
-        
+
         Image img = null;
         try {
             img = ImageIO.read(new File(filename));
@@ -179,13 +184,36 @@ public class Frame extends javax.swing.JFrame {
             saveImage.close();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
     }//GEN-LAST:event_jMenuItemSaveImageMousePressed
 
     private void jMenuItemWriteCodeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItemWriteCodeMousePressed
         WriteCodeDialog dlg = new WriteCodeDialog(this, true);
         dlg.setVisible(true);
-        
+        if ((dlg.message == null) || (dlg.shares == 0) || (dlg.threshold == 0) || (dlg.prime == null)) {
+            JOptionPane.showMessageDialog(null, "Please enter correct data", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        BigInteger message = new BigInteger(dlg.message);
+        BigInteger prime = new BigInteger(dlg.prime);
+        Sharing sharing = new Sharing(message, prime);
+        BigInteger args[] = new BigInteger[dlg.shares];
+        args[0] = prime.nextProbablePrime();
+        for (int i = 1; i < args.length; i++) {
+            args[i] = args[i - 1].nextProbablePrime();
+        }
+        BigInteger values[] = new BigInteger[dlg.shares];
+        try {
+            values = sharing.getShares(args, dlg.threshold, dlg.shares);
+        } catch (SharingException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        try {
+            embedding.writeSharesToSubImages(args, values);
+        } catch (SteganographyException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }   
     }//GEN-LAST:event_jMenuItemWriteCodeMousePressed
 
     /**
