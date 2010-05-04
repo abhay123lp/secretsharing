@@ -52,6 +52,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Read Code"/>
               </Properties>
+              <Events>
+                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jMenuItemReadCodeMousePressed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

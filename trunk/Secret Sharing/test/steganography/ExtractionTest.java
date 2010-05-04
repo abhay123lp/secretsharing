@@ -28,19 +28,6 @@ public class ExtractionTest {
 
     @Before
     public void setUp() {
-        try {
-            BigInteger[] args = new BigInteger[5];
-            BigInteger[] values = new BigInteger[5];
-            for (int i = 0; i < 5; i++) {
-                args[i] = BigInteger.valueOf(i + 1000);
-                values[i] = args[i].pow(5);
-            }
-            emb = new Embedding("1.bmp");
-            emb.writeSharesToSubImages(args, values);
-            emb.saveToFile("111.bmp");
-        } catch (SteganographyException ex) {
-            Logger.getLogger(ExtractionTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     @After
@@ -55,8 +42,8 @@ public class ExtractionTest {
         try {
             System.out.println("getShares");
             Extraction instance = null;
-            instance = new Extraction("11.bmp", emb.hashMeans);
-            instance.getSharesFromSubimages(5, 3);
+            instance = new Extraction("11.bmp", "properties.txt");
+            instance.getSharesFromSubimages(3);
         } catch (SteganographyException ex) {
             Logger.getLogger(ExtractionTest.class.getName()).log(Level.SEVERE, null, ex);
         }

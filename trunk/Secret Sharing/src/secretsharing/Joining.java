@@ -1,5 +1,5 @@
 /*
- * Joining message using shares from (k,n) threshold scheme
+ * Joining message using shares from (threshold,n) threshold scheme
  */
 package secretsharing;
 
@@ -12,15 +12,15 @@ public class Joining {
         this.prime = prime;
     }
 
-    public BigInteger getMessage(BigInteger[] args, BigInteger[] values, int k) throws JoiningException {
+    public BigInteger getMessage(BigInteger[] args, BigInteger[] values, int threshold) throws JoiningException {
         if (args.length != values.length) {
             throw new JoiningException("Quantity of args and values doesn't match!");
         }
-        if (args.length != k) {
+        if (args.length != threshold) {
             throw new JoiningException("Can't joining!");
         }
         BigInteger message = BigInteger.valueOf(0);
-        BigInteger[][] matrix = new BigInteger[k][k];
+        BigInteger[][] matrix = new BigInteger[threshold][threshold];
         fillMatrix(matrix, args);
         message = systemSolve(matrix, values);
         return message;

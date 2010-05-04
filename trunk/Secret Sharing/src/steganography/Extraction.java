@@ -5,6 +5,11 @@ package steganography;
 
 import java.io.*;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import steganographyException.SteganographyException;
 
 public class Extraction {
@@ -12,7 +17,7 @@ public class Extraction {
     public BigInteger args[];
     public BigInteger values[];
 
-    public Extraction(String filename, String[] hashMeans) throws SteganographyException {
+    public Extraction(String filename, String hashFilename) throws SteganographyException {
         args = null;
         values = null;
         FileInputStream image = null;
@@ -42,17 +47,38 @@ public class Extraction {
         pad = (sizeimage / height) - width * 3;
         count = 0;
         mask = (byte) 'v';
-        this.hashMeans = new String[hashMeans.length];
-        for (int i = 0; i < hashMeans.length; i++) {
-            this.hashMeans[i] = hashMeans[i];
-        }
+        readHashfile(hashFilename);
         hash = new Hash();
     }
 
-    public void getSharesFromSubimages(int n, int k) throws SteganographyException {
+    void readHashfile(String hashFilename) throws SteganographyException {
+        FileReader hashFile;
+        BufferedReader bufFile;
+        LinkedList<String> list = new LinkedList<String>();
+        try {
+            hashFile = new FileReader(hashFilename);
+            bufFile = new BufferedReader(hashFile);
+        } catch (FileNotFoundException ex) {
+            throw new SteganographyException("Couldn't open " + hashFilename + " file");
+        }
+        int length = 0;
+        String read;
+   
+        try {
+            while ((read = bufFile.readLine()) != null) {
+               list.addLast(read);
+            }
+        } catch (IOException ex) {
+            throw new SteganographyException(ex.getMessage());
+        }
+           hashMeans = new String[list.size()];
+           hashMeans= list.toArray(new String[0]);
+    }
+
+    public void getSharesFromSubimages(int threshold) throws SteganographyException {
         //      readPortationInformation();
-        args = new BigInteger[k];
-        values = new BigInteger[k];
+        args = new BigInteger[threshold];
+        values = new BigInteger[threshold];
         bitCount = 1;
         int begin = rgb.length - 1;
         int j = 0;
@@ -60,7 +86,7 @@ public class Extraction {
             if (mask == readMask(begin)) {
                 w = readIntFromSubimage();
                 h = readIntFromSubimage();
-                if ((h <= 0) || (w <= 0) || (h > rgb.length - 1) || (w > rgb.length - 1) || (h * w * 3 * n > rgb.length - 1)) {
+                if ((h <= 0) || (w <= 0) || (h > rgb.length - 1) || (w > rgb.length - 1) || (h * w * 3 * threshold > rgb.length - 1)) {
                     begin--;
                     continue;
                 }
@@ -72,7 +98,7 @@ public class Extraction {
                     } else {
                         begin -= w * 3;
                     }
-                    if ((j == k)) {
+                    if ((j == threshold)) {
                         return;
                     }
                 } else {
@@ -82,7 +108,7 @@ public class Extraction {
                 begin--;
             }
         }
-        throw new SteganographyException("Restore " + j +" shares!");
+        throw new SteganographyException("Restore " + j + " shares!");
     }
 
     private void readShareFromSubimage(int index) {
