@@ -19,9 +19,12 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import secretsharing.Joining;
 import secretsharing.Sharing;
+import secretsharingException.JoiningException;
 import secretsharingException.SharingException;
 import steganography.Embedding;
+import steganography.Extraction;
 import steganographyException.SteganographyException;
 
 /**
@@ -45,6 +48,7 @@ public class Frame extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabelImage = new javax.swing.JLabel();
+        jLabelMessage = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuItemOpenImage = new javax.swing.JMenuItem();
@@ -120,14 +124,20 @@ public class Frame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabelImage)
-                .addContainerGap(636, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelImage)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabelMessage)))
+                .addContainerGap(624, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabelImage)
-                .addContainerGap(457, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 445, Short.MAX_VALUE)
+                .addComponent(jLabelMessage)
+                .addContainerGap())
         );
 
         pack();
@@ -216,13 +226,31 @@ public class Frame extends javax.swing.JFrame {
         }
         try {
             embedding.writeSharesToSubImages(args, values);
+            embedding.writeFileWithHash("properties");
         } catch (SteganographyException ex) {
             JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
-        }   
+        }
     }//GEN-LAST:event_jMenuItemWriteCodeMousePressed
 
     private void jMenuItemReadCodeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItemReadCodeMousePressed
-        
+
+        ReadCodeDialog dlg = new ReadCodeDialog(this, true);
+        dlg.setVisible(true);
+        BigInteger prime = new BigInteger(dlg.prime);
+        BigInteger message = null;
+        Joining joining = new Joining(prime);
+        try {
+            Extraction extraction = new Extraction(filename, "properties");
+            extraction.getSharesFromSubimages(dlg.threshold);
+            try {
+                message = joining.getMessage(extraction.args, extraction.values, dlg.threshold);
+            } catch (JoiningException ex) {
+                JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SteganographyException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        jLabelMessage.setText(message.toString());
     }//GEN-LAST:event_jMenuItemReadCodeMousePressed
 
     /**
@@ -240,6 +268,7 @@ public class Frame extends javax.swing.JFrame {
     private String filename = null;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabelImage;
+    private javax.swing.JLabel jLabelMessage;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuCode;
     private javax.swing.JMenu jMenuFile;

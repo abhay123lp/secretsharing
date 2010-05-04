@@ -5,11 +5,7 @@ package steganography;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import steganographyException.SteganographyException;
 
 public class Extraction {
@@ -61,7 +57,6 @@ public class Extraction {
         } catch (FileNotFoundException ex) {
             throw new SteganographyException("Couldn't open " + hashFilename + " file");
         }
-        int length = 0;
         String read;
    
         try {
