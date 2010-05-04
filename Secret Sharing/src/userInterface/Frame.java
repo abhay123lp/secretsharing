@@ -97,6 +97,11 @@ public class Frame extends javax.swing.JFrame {
         jMenuCode.add(jMenuItemWriteCode);
 
         jMenuItemReadCode.setText("Read Code");
+        jMenuItemReadCode.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItemReadCodeMousePressed(evt);
+            }
+        });
         jMenuCode.add(jMenuItemReadCode);
 
         jMenuBar1.add(jMenuCode);
@@ -215,6 +220,10 @@ public class Frame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }   
     }//GEN-LAST:event_jMenuItemWriteCodeMousePressed
+
+    private void jMenuItemReadCodeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItemReadCodeMousePressed
+        
+    }//GEN-LAST:event_jMenuItemReadCodeMousePressed
 
     /**
      * @param args the command line arguments

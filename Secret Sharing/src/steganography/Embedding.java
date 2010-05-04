@@ -3,16 +3,20 @@
  */
 package steganography;
 
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.math.BigInteger;
 import steganographyException.SteganographyException;
 
 public class Embedding {
 
-    public String[] hashMeans;
     public byte head[];
     public byte infohead[];
 
@@ -267,6 +271,25 @@ public class Embedding {
         }
         return subimage;
     }
+
+    public void writeFileWithHash(String filename) throws SteganographyException {
+
+        try {
+            FileWriter hashFile = null;
+            hashFile = new FileWriter(filename);
+            BufferedWriter buf  = new BufferedWriter(hashFile);
+            for (int i = 0; i < hashMeans.length; i++) {
+               buf.write(hashMeans[i]);
+               buf.newLine();
+            }
+            buf.close();
+            hashFile.close();
+        } catch (IOException ex) {
+            throw new SteganographyException(ex.getMessage());
+        }
+
+    }
+    private String[] hashMeans;
     private Hash hash;
     private int bitCount;
     private byte mask;

@@ -51,6 +51,7 @@ public class EmbeddingTest {
         Embedding instance = new Embedding("1.bmp");
         instance.writeSharesToSubImages(args, values);
         instance.saveToFile("11.bmp");
+        instance.writeFileWithHash("properties.txt");
         // TODO review the generated test code and remove the default call to fail.
         //  fail("The test case is a prototype.");
     }
