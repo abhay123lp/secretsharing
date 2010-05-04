@@ -1,21 +1,11 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * WriteCodeDialog.java
  */
 
-/*
- * WriteCodeDialog.java
- *
- * Created on 01.05.2010, 17:21:25
- */
 package userInterface;
 
 import java.math.BigInteger;
 
-/**
- *
- * @author vitaa
- */
 public class WriteCodeDialog extends javax.swing.JDialog {
 
     public String message = null;

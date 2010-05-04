@@ -1,12 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * Frame.java
- *
- * Created on 01.05.2010, 14:37:24
  */
 package userInterface;
 
@@ -14,8 +7,6 @@ import java.awt.FileDialog;
 import java.awt.Image;
 import java.io.*;
 import java.math.BigInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -27,10 +18,6 @@ import steganography.Embedding;
 import steganography.Extraction;
 import steganographyException.SteganographyException;
 
-/**
- *
- * @author vitaa
- */
 public class Frame extends javax.swing.JFrame {
 
     /** Creates new form Frame */
@@ -168,6 +155,7 @@ public class Frame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        jLabelMessage.setText("");
     }//GEN-LAST:event_jMenuItemOpenImageMousePressed
 
     private void jMenuItemExitMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItemExitMousePressed
@@ -201,6 +189,7 @@ public class Frame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        jLabelMessage.setText("");
     }//GEN-LAST:event_jMenuItemSaveImageMousePressed
 
     private void jMenuItemWriteCodeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItemWriteCodeMousePressed
@@ -230,6 +219,7 @@ public class Frame extends javax.swing.JFrame {
         } catch (SteganographyException ex) {
             JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
+        jLabelMessage.setText("");
     }//GEN-LAST:event_jMenuItemWriteCodeMousePressed
 
     private void jMenuItemReadCodeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItemReadCodeMousePressed
