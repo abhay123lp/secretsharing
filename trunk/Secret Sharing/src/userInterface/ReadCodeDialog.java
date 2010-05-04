@@ -1,20 +1,9 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * ReadCodeDialog.java
- *
- * Created on 04.05.2010, 16:53:19
  */
 
 package userInterface;
 
-/**
- *
- * @author vitaa
- */
 public class ReadCodeDialog extends javax.swing.JDialog {
 
     public String prime = null;
