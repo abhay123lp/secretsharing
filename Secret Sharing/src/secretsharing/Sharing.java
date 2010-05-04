@@ -37,13 +37,13 @@ public class Sharing {
         return value;
     }
 
-    public BigInteger[] getShares(BigInteger[] args, int k, int n) throws SharingException {
-        /* Create (k,n)threshold scheme by calculating values of random polynom modulo prime */
+    public BigInteger[] getShares(BigInteger[] args, int threshold, int n) throws SharingException {
+        /* Create (threshold,n)threshold scheme by calculating values of random polynom modulo prime */
         if (args.length != n) {
             throw new SharingException("Args lenth doesn't match with n!");
         }
         BigInteger[] shares = new BigInteger[n];
-        generatePolynom(k-1);
+        generatePolynom(threshold-1);
         for (int i = 0; i < shares.length; i++) {
             shares[i] = getPolynomValue(args[i]);
         }
