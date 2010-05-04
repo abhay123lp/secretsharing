@@ -62,10 +62,12 @@ public class Embedding {
     public void writeSharesToSubImages(BigInteger[] args, BigInteger[] values) throws SteganographyException {
         int wn = ((int) java.lang.Math.sqrt(args.length));
         int hn;
-        if (args.length % wn == 0) {
+        if (wn * wn == args.length) {
             hn = wn;
         } else {
-            hn = ((int) (args.length / wn) + 1);
+            hn = (int) (args.length / wn);
+            if (args.length % wn != 0)
+                hn++;
         }
         w = width / wn;
         h = height / hn;
@@ -277,10 +279,10 @@ public class Embedding {
         try {
             FileWriter hashFile = null;
             hashFile = new FileWriter(filename);
-            BufferedWriter buf  = new BufferedWriter(hashFile);
+            BufferedWriter buf = new BufferedWriter(hashFile);
             for (int i = 0; i < hashMeans.length; i++) {
-               buf.write(hashMeans[i]);
-               buf.newLine();
+                buf.write(hashMeans[i]);
+                buf.newLine();
             }
             buf.close();
             hashFile.close();
