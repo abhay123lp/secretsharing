@@ -66,8 +66,9 @@ public class Embedding {
             hn = wn;
         } else {
             hn = (int) (args.length / wn);
-            if (args.length % wn != 0)
+            if (args.length % wn != 0) {
                 hn++;
+            }
         }
         w = width / wn;
         h = height / hn;
@@ -79,10 +80,10 @@ public class Embedding {
         int begin = rgb.length - 1;
         bitCount = 1;
         for (int j = 0; j < args.length; j++) {
-            hashMeans[j] = hash.getHash(getSubImages(h, w, begin));
             writeShareToSubimage(args[j], values[j], begin);
-            if ((begin - w * 3 + 1) % width == 0) {
-                begin -= width * (h - 1) * 3 + w * 3;
+            hashMeans[j] = hash.getHash(getSubImages(h, w, begin));
+            if ((begin - (w + width % wn) * 3) % width == 0) {
+                begin -= (width * (h - 1) * 3 + (w + width % wn) * 3);
             } else {
                 begin -= w * 3;
             }

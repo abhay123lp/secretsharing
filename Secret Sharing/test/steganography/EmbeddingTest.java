@@ -37,21 +37,16 @@ public class EmbeddingTest {
     @Test
     public void testWriteShares() throws Exception {
         System.out.println("writeShares");
-        BigInteger[] args = new BigInteger[5];
-        BigInteger[] values = new BigInteger[5];
-        for (int i = 0; i < 5; i++) {
+        BigInteger[] args = new BigInteger[10];
+        BigInteger[] values = new BigInteger[10];
+        for (int i = 0; i < args.length; i++) {
             args[i] = BigInteger.valueOf(i+1000);
             values[i] = args[i].pow(5);
-        }
-         for (int i=0; i<5; i++)
-        {
-            System.out.println(args[i].toString());
-            System.out.println(values[i].toString());
         }
         Embedding instance = new Embedding("1.bmp");
         instance.writeSharesToSubImages(args, values);
         instance.saveToFile("11.bmp");
-        instance.writeFileWithHash("properties.txt");
+        instance.writeFileWithHash("properties");
         // TODO review the generated test code and remove the default call to fail.
         //  fail("The test case is a prototype.");
     }
