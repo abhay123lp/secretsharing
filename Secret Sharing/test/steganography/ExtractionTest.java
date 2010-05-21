@@ -48,6 +48,18 @@ public class ExtractionTest {
         }
     }
 
+    @Test
+    public void testGetSharesFromOddSizeImage() {
+        try {
+            System.out.println("getSharesFromOddImage");
+            Extraction instance = null;
+            instance = new Extraction("22.bmp", "properties");
+            instance.getSharesFromSubimages(7);
+        } catch (SteganographyException ex) {
+            Logger.getLogger(ExtractionTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /*   @Test
     public void testReadPortationInformation() {
     System.out.println("readPortInfo");

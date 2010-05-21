@@ -5,6 +5,7 @@ package userInterface;
 
 import java.awt.FileDialog;
 import java.awt.Image;
+import java.awt.image.MemoryImageSource;
 import java.io.*;
 import java.math.BigInteger;
 import javax.imageio.ImageIO;
@@ -36,6 +37,15 @@ public class Frame extends javax.swing.JFrame {
 
         jLabelImage = new javax.swing.JLabel();
         jLabelMessage = new javax.swing.JLabel();
+        jToolBar1 = new javax.swing.JToolBar();
+        jButton0 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuItemOpenImage = new javax.swing.JMenuItem();
@@ -48,6 +58,96 @@ public class Frame extends javax.swing.JFrame {
         jMenuItemAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jToolBar1.setRollover(true);
+
+        jButton0.setText("0");
+        jButton0.setFocusable(false);
+        jButton0.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton0.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton0.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton0MousePressed(evt);
+            }
+        });
+        jToolBar1.add(jButton0);
+
+        jButton1.setText("1");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton1MousePressed(evt);
+            }
+        });
+        jToolBar1.add(jButton1);
+
+        jButton2.setText("2");
+        jButton2.setFocusable(false);
+        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton2MousePressed(evt);
+            }
+        });
+        jToolBar1.add(jButton2);
+
+        jButton3.setText("3");
+        jButton3.setFocusable(false);
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton3MousePressed(evt);
+            }
+        });
+        jToolBar1.add(jButton3);
+
+        jButton4.setText("4");
+        jButton4.setFocusable(false);
+        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton4MousePressed(evt);
+            }
+        });
+        jToolBar1.add(jButton4);
+
+        jButton5.setText("5");
+        jButton5.setFocusable(false);
+        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton5MousePressed(evt);
+            }
+        });
+        jToolBar1.add(jButton5);
+
+        jButton6.setText("6");
+        jButton6.setFocusable(false);
+        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton6MousePressed(evt);
+            }
+        });
+        jToolBar1.add(jButton6);
+
+        jButton7.setText("7");
+        jButton7.setFocusable(false);
+        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton7MousePressed(evt);
+            }
+        });
+        jToolBar1.add(jButton7);
 
         jMenuFile.setText("File");
 
@@ -110,19 +210,21 @@ public class Frame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabelImage)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabelMessage)))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabelImage, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabelMessage, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(624, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabelImage)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 445, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 409, Short.MAX_VALUE)
                 .addComponent(jLabelMessage)
                 .addContainerGap())
         );
@@ -147,7 +249,6 @@ public class Frame extends javax.swing.JFrame {
             return;
         }
         ImageIcon icon = new ImageIcon(img);
-        jLabelImage.setSize(600, 600);
         jLabelImage.setIcon(icon);
         try {
             embedding = new Embedding(filename);
@@ -170,8 +271,8 @@ public class Frame extends javax.swing.JFrame {
         FileDialog fd = new FileDialog(this, "Save Image", FileDialog.SAVE);
         fd.setVisible(true);
         String name = fd.getDirectory() + fd.getFile();
-        if (!filename.contains(".bmp")) {
-            filename += ".bmp";
+        if (!name.contains(".bmp")) {
+            name += ".bmp";
         }
         FileOutputStream saveImage = null;
         try {
@@ -181,11 +282,15 @@ public class Frame extends javax.swing.JFrame {
             return;
         }
         try {
-            saveImage.write(embedding.head);
-            saveImage.write(embedding.infohead);
-            saveImage.write(embedding.getRgb());
+            saveImage.write(embedding.image.getHead());
+            saveImage.write(embedding.image.getInfohead());
+            saveImage.write(embedding.image.getRGB());
             saveImage.close();
+            embedding.writeFileWithHash(name + hashFilename);
         } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        } catch (SteganographyException ex) {
             JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -215,7 +320,6 @@ public class Frame extends javax.swing.JFrame {
         }
         try {
             embedding.writeSharesToSubImages(args, values);
-            embedding.writeFileWithHash("properties");
         } catch (SteganographyException ex) {
             JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -230,7 +334,7 @@ public class Frame extends javax.swing.JFrame {
         BigInteger message = null;
         Joining joining = new Joining(prime);
         try {
-            Extraction extraction = new Extraction(filename, "properties");
+            Extraction extraction = new Extraction(filename, filename + hashFilename);
             extraction.getSharesFromSubimages(dlg.threshold);
             try {
                 message = joining.getMessage(extraction.args, extraction.values, dlg.threshold);
@@ -243,6 +347,72 @@ public class Frame extends javax.swing.JFrame {
         jLabelMessage.setText(message.toString());
     }//GEN-LAST:event_jMenuItemReadCodeMousePressed
 
+    private void jButton0MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton0MousePressed
+        byte[] rgb = shiftBytes(embedding.image.getRGB(), 0);
+        jLabelImage.setIcon(createIcon(rgb));
+    }//GEN-LAST:event_jButton0MousePressed
+
+    private void jButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MousePressed
+        byte[] rgb = shiftBytes(embedding.image.getRGB(), 1);
+        jLabelImage.setIcon(createIcon(rgb));
+    }//GEN-LAST:event_jButton1MousePressed
+
+    private void jButton2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MousePressed
+        byte[] rgb = shiftBytes(embedding.image.getRGB(), 2);
+        jLabelImage.setIcon(createIcon(rgb));
+    }//GEN-LAST:event_jButton2MousePressed
+
+    private void jButton3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MousePressed
+        byte[] rgb = shiftBytes(embedding.image.getRGB(), 3);
+        jLabelImage.setIcon(createIcon(rgb));
+    }//GEN-LAST:event_jButton3MousePressed
+
+    private void jButton4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MousePressed
+        byte[] rgb = shiftBytes(embedding.image.getRGB(), 4);
+        jLabelImage.setIcon(createIcon(rgb));
+    }//GEN-LAST:event_jButton4MousePressed
+
+    private void jButton5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MousePressed
+        byte[] rgb = shiftBytes(embedding.image.getRGB(), 5);
+        jLabelImage.setIcon(createIcon(rgb));
+    }//GEN-LAST:event_jButton5MousePressed
+
+    private void jButton6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MousePressed
+        byte[] rgb = shiftBytes(embedding.image.getRGB(), 6);
+        jLabelImage.setIcon(createIcon(rgb));
+    }//GEN-LAST:event_jButton6MousePressed
+
+    private void jButton7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton7MousePressed
+        byte[] rgb = shiftBytes(embedding.image.getRGB(), 7);
+        jLabelImage.setIcon(createIcon(rgb));
+    }//GEN-LAST:event_jButton7MousePressed
+
+    private ImageIcon createIcon(byte[] rgb) {
+        Image img = null;
+        int height = embedding.image.getHeight();
+        int width = embedding.image.getWidth();
+        int data[] = new int[height * width];
+        int index = 0;
+        for (int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++) {
+                data[width * (height - j - 1) + i] =
+                        (255 & 0xff) << 24 | (((int) rgb[index + 2] & 0xff) << 16) | (((int) rgb[index + 1] & 0xff) << 8) | (int) rgb[index] & 0xff;
+                index += 3;
+            }
+            index += embedding.image.getPad();
+        }
+        img = createImage(new MemoryImageSource(width, height, data, 0, width));
+        return new ImageIcon(img);
+    }
+
+    private byte[] shiftBytes(byte[] rgb, int shift) {
+        byte[] rgbWithMask = new byte[rgb.length];
+        for (int i = 0; i < rgb.length; i++) {
+            rgbWithMask[i] = (byte) (rgb[i] << (7-shift));
+        }
+        return rgbWithMask;
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -254,9 +424,18 @@ public class Frame extends javax.swing.JFrame {
             }
         });
     }
+    private String hashFilename = "_hashkeys";
     private Embedding embedding = null;
     private String filename = null;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton0;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabelImage;
     private javax.swing.JLabel jLabelMessage;
     private javax.swing.JMenuBar jMenuBar1;
@@ -269,5 +448,6 @@ public class Frame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemReadCode;
     private javax.swing.JMenuItem jMenuItemSaveImage;
     private javax.swing.JMenuItem jMenuItemWriteCode;
+    private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }
