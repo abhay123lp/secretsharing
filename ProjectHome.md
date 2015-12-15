@@ -1,0 +1,1 @@
+The main idea of the project is to write a code into a bmp image more invisible and safe using secret sharing by Lagrange's method.
